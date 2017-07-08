@@ -1,0 +1,23 @@
+{
+    "name": "lukewaite/ringphp-guzzle-handler",
+    "require": {
+        "guzzlehttp/ringphp": "^1.1",
+        "guzzlehttp/guzzle": "^6.2"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Luke Waite",
+            "email": "lwaite@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "LukeWaite\\RingPhpGuzzleHandler\\": "src/"
+        }
+    },
+    "scripts": {
+        "cs": "phpcs --standard=psr2 src/",
+        "test": "phpunit"
+    }
+}
