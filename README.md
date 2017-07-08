@@ -1,7 +1,7 @@
 # RingPHP Guzzle Handler
 
 ### What have you done?
-I've build a [RingPHP](https://github.com/guzzle/RingPHP) Handler that
+I've built a [RingPHP](https://github.com/guzzle/RingPHP) Handler that
 uses Guzzle as the transport.
 
 ### You've done wot mate?
