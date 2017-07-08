@@ -8,7 +8,6 @@ use GuzzleHttp\RequestOptions;
 use GuzzleHttp\Ring\Core;
 use GuzzleHttp\Ring\Future\CompletedFutureArray;
 use GuzzleHttp\Ring\Future\FutureArrayInterface;
-use GuzzleHttp\Stream\Stream;
 
 class GuzzleHandler
 {
@@ -71,10 +70,35 @@ class GuzzleHandler
             'reason' => $response->getReasonPhrase(),
             'headers' => $response->getHeaders(),
             'effective_url' => $url,
-            'body' => $response->getBody(),
-            'transfer_stats' => [
-                'total_time' => $time
-            ]
+            'body' => $this->createStream((string)$response->getBody()),
+            'transfer_stats' => $this->createTransferStats($url, $time, $response)
         ];
+    }
+
+    /**
+     * @param $url
+     * @param $time
+     * @param \Psr\Http\Message\ResponseInterface $response
+     * @return array
+     */
+    protected function createTransferStats($url, $time, $response) {
+        return [
+            'url' => $url,
+            'total_time' => $time,
+            'content_type' => $response->getHeader('Content-Type'),
+            'http_code' => $response->getStatusCode()
+        ];
+    }
+
+    protected function createStream($resource)
+    {
+        if ($resource == '') {
+            return null;
+        }
+
+        $stream = fopen('php://temp', 'r+');
+        fwrite($stream, $resource);
+        fseek($stream, 0);
+        return $stream;
     }
 }
