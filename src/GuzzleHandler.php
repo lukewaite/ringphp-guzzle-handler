@@ -43,7 +43,7 @@ class GuzzleHandler
                 $request['http_method'],
                 $url,
                 [
-                    RequestOptions::BODY => $request['body'],
+                    RequestOptions::BODY => Core::body($request),
                     RequestOptions::HEADERS => $request['headers'],
                     RequestOptions::HTTP_ERRORS => false
                 ]
@@ -71,7 +71,7 @@ class GuzzleHandler
             'reason' => $response->getReasonPhrase(),
             'headers' => $response->getHeaders(),
             'effective_url' => $url,
-            'body' => Stream::factory($response->getBody()),
+            'body' => $response->getBody(),
             'transfer_stats' => [
                 'total_time' => $time
             ]
