@@ -5,7 +5,7 @@ I've built a [RingPHP](https://github.com/guzzle/RingPHP) Handler that
 uses Guzzle as the transport.
 
 ### You've done wot mate?
-Yes - I built a transport for RingPHP (an older GuzzleZHttp project) that
+Yes - I built a transport for RingPHP (an older GuzzleHttp project) that
 uses Guzzle 6 as the transport.
 
 ### Reasoning
