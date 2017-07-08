@@ -85,7 +85,7 @@ class GuzzleHandler
         return [
             'url' => $url,
             'total_time' => $time,
-            'content_type' => $response->getHeader('Content-Type'),
+            'content_type' => $response->getHeaderLine('Content-Type'),
             'http_code' => $response->getStatusCode()
         ];
     }
