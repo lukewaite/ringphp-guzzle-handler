@@ -43,7 +43,8 @@ class GuzzleHandler
                 $url,
                 [
                     RequestOptions::BODY => $request['body'],
-                    RequestOptions::HEADERS => $request['headers']
+                    RequestOptions::HEADERS => $request['headers'],
+                    RequestOptions::HTTP_ERRORS => false
                 ]
             );
             $end = microtime();
