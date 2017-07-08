@@ -6,6 +6,8 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use GuzzleHttp\Ring\Core;
+use GuzzleHttp\Ring\Future\CompletedFutureArray;
+use GuzzleHttp\Ring\Future\FutureArrayInterface;
 
 class GuzzleHandler
 {
@@ -45,11 +47,11 @@ class GuzzleHandler
      * @param $url
      * @param \Psr\Http\Message\ResponseInterface $response
      *
-     * @return array
+     * @return FutureArrayInterface
      */
     protected function processResponse($url, $time, $response)
     {
-        return [
+        return new CompletedFutureArray([
             'version' => $response->getProtocolVersion(),
             'status' => $response->getStatusCode(),
             'reason' => $response->getReasonPhrase(),
@@ -59,6 +61,6 @@ class GuzzleHandler
             'transfer_stats' => [
                 'total_time' => $time
             ]
-        ];
+        ]);
     }
 }
