@@ -18,7 +18,18 @@ class GuzzleHandler
         $this->client = new Client($config);
     }
 
+    /**
+     * @param $request
+     * @return FutureArrayInterface
+     */
     public function __invoke($request)
+    {
+        return new CompletedFutureArray(
+            $this->_invokeGuzzle($request)
+        );
+    }
+
+    public function _invokeGuzzle($request)
     {
         $url = Core::url($request);
         Core::doSleep($request);
@@ -45,13 +56,14 @@ class GuzzleHandler
 
     /**
      * @param $url
+     * @param $time
      * @param \Psr\Http\Message\ResponseInterface $response
      *
-     * @return FutureArrayInterface
+     * @return array
      */
     protected function processResponse($url, $time, $response)
     {
-        return new CompletedFutureArray([
+        return [
             'version' => $response->getProtocolVersion(),
             'status' => $response->getStatusCode(),
             'reason' => $response->getReasonPhrase(),
@@ -61,6 +73,6 @@ class GuzzleHandler
             'transfer_stats' => [
                 'total_time' => $time
             ]
-        ]);
+        ];
     }
 }
