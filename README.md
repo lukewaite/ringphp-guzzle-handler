@@ -1,8 +1,7 @@
 # RingPHP Guzzle Handler
 
 ### What have you done?
-I've built a [RingPHP](https://github.com/guzzle/RingPHP) Handler that
-uses Guzzle as the transport.
+I've built a [RingPHP][ringphp] Handler that uses Guzzle as the transport.
 
 ### You've done wot mate?
 Yes - I built a transport for RingPHP (an older GuzzleHttp project) that
@@ -23,8 +22,9 @@ followed, but in some cases I've had to go out of my way to tune this
 for the ElasticSearch PHP SDK.
 
 #### $response `body`
-You're supposed to be able to return a [lot of different types](http://ringphp.readthedocs.io/en/latest/spec.html#responses) here, but
-ElasticSearch expects it to be only a stream, so that's what we return.
+You're supposed to be able to return a [lot of different types][response]
+here, but ElasticSearch expects it to be only a stream, so that's what we
+return.
 
 #### $response `transfer_stats`
 Transfer stats is supposed to be an arbitrary array of stats provided by
@@ -33,3 +33,5 @@ stuff from the default CURL handler to be in there.
 
 
 [implementing-handlers]: http://ringphp.readthedocs.io/en/latest/client_handlers.html#implementing-handlers
+[responses]: http://ringphp.readthedocs.io/en/latest/spec.html#responses
+[ringphp]: https://github.com/guzzle/RingPHP
