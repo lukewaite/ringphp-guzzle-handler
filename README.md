@@ -4,7 +4,7 @@
 I've built a [RingPHP][ringphp] Handler that uses Guzzle as the transport.
 
 ### You've done wot mate?
-Yes - I built a transport for RingPHP (an older GuzzleHttp project) that
+Yes - I built a handler for RingPHP (an older GuzzleHttp project) that
 uses Guzzle 6 as the transport.
 
 ### Reasoning
@@ -33,5 +33,5 @@ stuff from the default CURL handler to be in there.
 
 
 [implementing-handlers]: http://ringphp.readthedocs.io/en/latest/client_handlers.html#implementing-handlers
-[responses]: http://ringphp.readthedocs.io/en/latest/spec.html#responses
+[response]: http://ringphp.readthedocs.io/en/latest/spec.html#responses
 [ringphp]: https://github.com/guzzle/RingPHP
