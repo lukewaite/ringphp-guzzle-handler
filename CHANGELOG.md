@@ -12,5 +12,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * Initial Release
 
-[Unreleased]: https://github.com/lukewaite/logstash-input-cloudwatch-logs/compare/v1.0.1...HEAD
-[v1.0.1]: https://github.com/lukewaite/logstash-input-cloudwatch-logs/compare/v1.0.0...v1.0.1
+[Unreleased]: https://github.com/lukewaite/ringphp-guzzle-handler/compare/v1.0.1...HEAD
+[v1.0.1]: https://github.com/lukewaite/ringphp-guzzle-handler/compare/v1.0.0...v1.0.1
