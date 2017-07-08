@@ -8,6 +8,7 @@ use GuzzleHttp\RequestOptions;
 use GuzzleHttp\Ring\Core;
 use GuzzleHttp\Ring\Future\CompletedFutureArray;
 use GuzzleHttp\Ring\Future\FutureArrayInterface;
+use GuzzleHttp\Stream\Stream;
 
 class GuzzleHandler
 {
@@ -70,7 +71,7 @@ class GuzzleHandler
             'reason' => $response->getReasonPhrase(),
             'headers' => $response->getHeaders(),
             'effective_url' => $url,
-            'body' => $response->getBody(),
+            'body' => Stream::factory($response->getBody()),
             'transfer_stats' => [
                 'total_time' => $time
             ]
