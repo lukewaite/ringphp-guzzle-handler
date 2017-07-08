@@ -19,5 +19,9 @@
     "scripts": {
         "cs": "phpcs --standard=psr2 src/",
         "test": "phpunit"
+    },
+    "require-dev": {
+        "mockery/mockery": "^0.9.9",
+        "phpunit/phpunit": "~4.8"
     }
 }

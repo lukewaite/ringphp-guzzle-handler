@@ -13,9 +13,9 @@ class GuzzleHandler
 {
     private $client;
 
-    public function __construct($config = [])
+    public function __construct($client)
     {
-        $this->client = new Client($config);
+        $this->client = $client;
     }
 
     /**
@@ -37,7 +37,7 @@ class GuzzleHandler
         $stats = null;
 
         try {
-            $start = microtime();
+            $start = microtime(true);
             $response = $this->client->request(
                 $request['http_method'],
                 $url,
@@ -47,7 +47,7 @@ class GuzzleHandler
                     RequestOptions::HTTP_ERRORS => false
                 ]
             );
-            $end = microtime();
+            $end = microtime(true);
         } catch (GuzzleException $e) {
             return ['error' => $e];
         }
