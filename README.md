@@ -35,6 +35,18 @@ Transfer stats is supposed to be an arbitrary array of stats provided by
 the handler, but it turns out ElasticSearch expects some pretty specific
 stuff from the default CURL handler to be in there.
 
+## Usage
+
+### Elasticsearch
+
+```php
+$guzzle = new GuzzleHttp\Client();
+$guzzleHandler  = new LukeWaite\RingPhpGuzzleHandler\GuzzleHandler($guzzle);
+
+$client = Elasticsearch\ClientBuilder::create()
+            ->setHandler($guzzleHandler)
+            ->build();
+```
 
 [implementing-handlers]: http://ringphp.readthedocs.io/en/latest/client_handlers.html#implementing-handlers
 [response]: http://ringphp.readthedocs.io/en/latest/spec.html#responses
