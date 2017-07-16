@@ -37,6 +37,12 @@ stuff from the default CURL handler to be in there.
 
 ## Usage
 
+### Installing
+
+This package can be installed with composer.
+
+    $ composer require lukewaite/ringphp-guzzle-handler
+
 ### Elasticsearch
 
 ```php
