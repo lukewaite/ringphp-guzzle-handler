@@ -39,7 +39,7 @@ NewRelic supports tracking external requests for Guzzle, but not for
 RingPHP. Using this handler means we can get more accurate instrumentation
 on our transactions.
 
-#### Example NewRelic APM Chart, Before and After
+#### Example NewRelic APM Chart, Before and After Deployment
 ![newrelic before and after](https://lukewaite.ca/images/2017-07-15-newrelic-elasticsearch/newrelic-instrumentation.png)
 
 ## How true to RingPHP is this?
