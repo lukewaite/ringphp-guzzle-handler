@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace LukeWaite\RingPhpGuzzleHandler\Tests;
 
@@ -7,37 +7,56 @@ use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Ring\Future\FutureArrayInterface;
 use LukeWaite\RingPhpGuzzleHandler\GuzzleHandler;
-use Mockery as m;
 use PHPUnit\Framework\TestCase;
 
 class GuzzleHandlerTest extends TestCase
 {
-    public function tearDown()
-    {
-        m::close();
-    }
-
     /** @test */
     public function it_makes_a_request()
     {
         $response = new Response(200, ['Content-Type' => ['application/json']], 'testResponseBody');
-        $client = m::mock(Client::class);
-        $client->shouldReceive('request')
-            ->once()
-            ->with('POST', 'https://example.com/', [
-                'body' => 'testBody',
-                'headers' => ['host'=>['example.com']],
-                'http_errors' => false
-            ])
-            ->andReturn($response);
 
-        $handler = new GuzzleHandler($client);
+        $client = $this->prophesize(Client::class);
+        $client->request('POST', 'https://example.com/', [
+            'body' => 'testBody',
+            'headers' => ['host'=>['example.com']],
+            'http_errors' => false
+        ])->willReturn($response);
+
+        $handler = new GuzzleHandler($client->reveal());
         $response = $handler([
             'http_method' => 'POST',
             'scheme' => 'https',
             'uri' => '/',
             'headers' => ['host'=>['example.com']],
             'body' => 'testBody'
+        ]);
+        $this->assertInstanceOf(FutureArrayInterface::class, $response);
+
+        return $response;
+    }
+
+    /** @test */
+    public function it_makes_requests_with_authentication()
+    {
+        $response = new Response(200, ['Content-Type' => ['application/json']], 'testResponseBody');
+
+        $client = $this->prophesize(Client::class);
+        $client->request('POST', 'https://example.com/', [
+            'body' => 'testBody',
+            'headers' => ['host' => ['example.com']],
+            'http_errors' => false,
+            'auth' => ['user', 'password']
+        ])->willReturn($response);
+
+        $handler = new GuzzleHandler($client->reveal());
+        $response = $handler([
+            'http_method' => 'POST',
+            'scheme' => 'https',
+            'uri' => '/',
+            'headers' => ['host'=>['example.com']],
+            'body' => 'testBody',
+            'client' => ['curl' => [CURLOPT_USERPWD => 'user:password']]
         ]);
         $this->assertInstanceOf(FutureArrayInterface::class, $response);
 
@@ -74,12 +93,16 @@ class GuzzleHandlerTest extends TestCase
     /** @test */
     public function it_should_catch_guzzle_exceptions_and_pass_as_an_error()
     {
-        $e = new TransferException('Test Exception');
-        $client = m::mock(Client::class);
-        $client->shouldReceive('request')
-            ->once()
-            ->andThrow($e);
-        $handler = new GuzzleHandler($client);
+        $exception = new TransferException('Test Exception');
+
+        $client = $this->prophesize(Client::class);
+        $client->request('POST', 'https://example.com/', [
+            'body' => 'testBody',
+            'headers' => ['host' => ['example.com']],
+            'http_errors' => false,
+        ])->willThrow($exception);
+
+        $handler = new GuzzleHandler($client->reveal());
         $response = $handler([
             'http_method' => 'POST',
             'scheme' => 'https',
@@ -88,6 +111,6 @@ class GuzzleHandlerTest extends TestCase
             'body' => 'testBody'
         ]);
 
-        $this->assertEquals($e, $response['error']);
+        $this->assertEquals($exception, $response['error']);
     }
 }
