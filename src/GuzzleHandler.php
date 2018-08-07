@@ -77,13 +77,13 @@ class GuzzleHandler
     private function createStream($resource)
     {
         if ($resource == '') {
-            return null;
+            return null; // @codeCoverageIgnore
         }
 
         $stream = fopen('php://temp', 'r+');
 
         if ($stream === false) {
-            return null;
+            return null; // @codeCoverageIgnore
         }
 
         fwrite($stream, $resource);
