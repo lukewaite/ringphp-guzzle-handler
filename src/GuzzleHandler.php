@@ -1,68 +1,57 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace LukeWaite\RingPhpGuzzleHandler;
 
-use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use GuzzleHttp\Ring\Core;
 use GuzzleHttp\Ring\Future\CompletedFutureArray;
 use GuzzleHttp\Ring\Future\FutureArrayInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class GuzzleHandler
 {
     private $client;
 
-    public function __construct($client)
+    public function __construct(ClientInterface $client)
     {
         $this->client = $client;
     }
 
-    /**
-     * @param $request
-     * @return FutureArrayInterface
-     */
-    public function __invoke($request)
+    public function __invoke(array $request): FutureArrayInterface
     {
-        return new CompletedFutureArray(
-            $this->_invokeGuzzle($request)
-        );
+        return new CompletedFutureArray($this->invokeGuzzle($request));
     }
 
-    public function _invokeGuzzle($request)
+    private function invokeGuzzle(array $request): array
     {
         $url = Core::url($request);
         Core::doSleep($request);
 
         $stats = null;
+        $options = [
+            RequestOptions::BODY => Core::body($request),
+            RequestOptions::HEADERS => $request['headers'],
+            RequestOptions::HTTP_ERRORS => false,
+        ];
+
+        if (isset($request['client']['curl'][CURLOPT_USERPWD])) {
+            $options['auth'] = explode(':', $request['client']['curl'][CURLOPT_USERPWD]);
+        }
 
         try {
             $start = microtime(true);
-            $response = $this->client->request(
-                $request['http_method'],
-                $url,
-                [
-                    RequestOptions::BODY => Core::body($request),
-                    RequestOptions::HEADERS => $request['headers'],
-                    RequestOptions::HTTP_ERRORS => false
-                ]
-            );
+            $response = $this->client->request($request['http_method'], $url, $options);
             $end = microtime(true);
-        } catch (GuzzleException $e) {
-            return ['error' => $e];
+        } catch (GuzzleException $exception) {
+            return ['error' => $exception] + $this->emptyResponse();
         }
 
         return $this->processResponse($url, ($end - $start), $response);
     }
 
-    /**
-     * @param $url
-     * @param $time
-     * @param \Psr\Http\Message\ResponseInterface $response
-     *
-     * @return array
-     */
-    protected function processResponse($url, $time, $response)
+    private function processResponse(string $url, float $time, ResponseInterface $response): array
     {
         return [
             'version' => $response->getProtocolVersion(),
@@ -70,35 +59,54 @@ class GuzzleHandler
             'reason' => $response->getReasonPhrase(),
             'headers' => $response->getHeaders(),
             'effective_url' => $url,
-            'body' => $this->createStream((string)$response->getBody()),
-            'transfer_stats' => $this->createTransferStats($url, $time, $response)
+            'body' => $this->createStream((string) $response->getBody()),
+            'transfer_stats' => $this->createTransferStats($url, $time, $response),
         ];
     }
 
-    /**
-     * @param $url
-     * @param $time
-     * @param \Psr\Http\Message\ResponseInterface $response
-     * @return array
-     */
-    protected function createTransferStats($url, $time, $response) {
+    private function createTransferStats(string $url, float $time, ResponseInterface $response): array
+    {
         return [
             'url' => $url,
             'total_time' => $time,
             'content_type' => $response->getHeaderLine('Content-Type'),
-            'http_code' => $response->getStatusCode()
+            'http_code' => $response->getStatusCode(),
         ];
     }
 
-    protected function createStream($resource)
+    private function createStream($resource)
     {
         if ($resource == '') {
-            return null;
+            return null; // @codeCoverageIgnore
         }
 
         $stream = fopen('php://temp', 'r+');
+
+        if ($stream === false) {
+            return null; // @codeCoverageIgnore
+        }
+
         fwrite($stream, $resource);
         fseek($stream, 0);
+
         return $stream;
+    }
+
+    private function emptyResponse()
+    {
+        return [
+            'version' => null,
+            'status' => null,
+            'reason' => null,
+            'headers' => [],
+            'effective_url' => null,
+            'body' => null,
+            'transfer_stats' => [
+                'url' => null,
+                'total_time' => null,
+                'content_type' => null,
+                'http_code' => null,
+            ],
+        ];
     }
 }
