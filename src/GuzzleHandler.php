@@ -2,6 +2,7 @@
 
 namespace LukeWaite\RingPhpGuzzleHandler;
 
+use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
@@ -14,9 +15,9 @@ class GuzzleHandler
 {
     private $client;
 
-    public function __construct(ClientInterface $client)
+    public function __construct(ClientInterface $client = null)
     {
-        $this->client = $client;
+        $this->client = $client ?? new Client();
     }
 
     public function __invoke(array $request): FutureArrayInterface
