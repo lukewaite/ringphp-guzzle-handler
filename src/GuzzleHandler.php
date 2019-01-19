@@ -5,12 +5,14 @@ namespace LukeWaite\RingPhpGuzzleHandler;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\StreamWrapper;
 use GuzzleHttp\RequestOptions;
 use GuzzleHttp\Ring\Core;
-use GuzzleHttp\Ring\Future\CompletedFutureArray;
+use GuzzleHttp\Ring\Future\FutureArray;
 use GuzzleHttp\Ring\Future\FutureArrayInterface;
 use Psr\Http\Message\ResponseInterface;
+use React\Promise\Deferred;
 
 class GuzzleHandler
 {
@@ -23,10 +25,17 @@ class GuzzleHandler
 
     public function __invoke(array $request): FutureArrayInterface
     {
-        return new CompletedFutureArray($this->invokeGuzzle($request));
+        $defered = new Deferred();
+        $promise = $this->invokeGuzzle($request)->then([$defered, 'resolve'], [$defered, 'resolve']);
+
+        return new FutureArray(
+            $defered->promise(),
+            [$promise, 'wait'],
+            [$promise, 'cancel']
+        );
     }
 
-    private function invokeGuzzle(array $request): array
+    private function invokeGuzzle(array $request): PromiseInterface
     {
         $url = Core::url($request);
         Core::doSleep($request);
@@ -42,15 +51,16 @@ class GuzzleHandler
             $options['auth'] = explode(':', $request['client']['curl'][CURLOPT_USERPWD]);
         }
 
-        try {
-            $start = microtime(true);
-            $response = $this->client->request($request['http_method'], $url, $options);
-            $end = microtime(true);
-        } catch (GuzzleException $exception) {
-            return ['error' => $exception] + $this->emptyResponse();
-        }
-
-        return $this->processResponse($url, ($end - $start), $response);
+        $start = \microtime(true);
+        return $this->client->requestAsync($request['http_method'], $url, $options)
+            ->then(
+                function ($response) use ($url, $start) {
+                    return $this->processResponse($url, (\microtime(true) - $start), $response);
+                },
+                function (GuzzleException $exception) {
+                    return ['error' => $exception] + $this->emptyResponse();
+                }
+            );
     }
 
     private function processResponse(string $url, float $time, ResponseInterface $response): array
@@ -76,7 +86,7 @@ class GuzzleHandler
         ];
     }
 
-    private function emptyResponse()
+    private function emptyResponse(): array
     {
         return [
             'version' => null,
