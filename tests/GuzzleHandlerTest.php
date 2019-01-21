@@ -4,6 +4,8 @@ namespace LukeWaite\RingPhpGuzzleHandler\Tests;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\TransferException;
+use GuzzleHttp\Promise\FulfilledPromise;
+use GuzzleHttp\Promise\RejectedPromise;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Ring\Future\FutureArrayInterface;
 use LukeWaite\RingPhpGuzzleHandler\GuzzleHandler;
@@ -17,11 +19,11 @@ class GuzzleHandlerTest extends TestCase
         $response = new Response(200, ['Content-Type' => ['application/json']], 'testResponseBody');
 
         $client = $this->prophesize(Client::class);
-        $client->request('POST', 'https://example.com/', [
+        $client->requestAsync('POST', 'https://example.com/', [
             'body' => 'testBody',
             'headers' => ['host'=>['example.com']],
             'http_errors' => false
-        ])->willReturn($response);
+        ])->willReturn(new FulfilledPromise($response));
 
         $handler = new GuzzleHandler($client->reveal());
         $response = $handler([
@@ -42,12 +44,12 @@ class GuzzleHandlerTest extends TestCase
         $response = new Response(200, ['Content-Type' => ['application/json']], 'testResponseBody');
 
         $client = $this->prophesize(Client::class);
-        $client->request('POST', 'https://example.com/', [
+        $client->requestAsync('POST', 'https://example.com/', [
             'body' => 'testBody',
             'headers' => ['host' => ['example.com']],
             'http_errors' => false,
             'auth' => ['user', 'password']
-        ])->willReturn($response);
+        ])->willReturn(new FulfilledPromise($response));
 
         $handler = new GuzzleHandler($client->reveal());
         $response = $handler([
@@ -96,11 +98,11 @@ class GuzzleHandlerTest extends TestCase
         $exception = new TransferException('Test Exception');
 
         $client = $this->prophesize(Client::class);
-        $client->request('POST', 'https://example.com/', [
+        $client->requestAsync('POST', 'https://example.com/', [
             'body' => 'testBody',
             'headers' => ['host' => ['example.com']],
             'http_errors' => false,
-        ])->willThrow($exception);
+        ])->willReturn(new RejectedPromise($exception));
 
         $handler = new GuzzleHandler($client->reveal());
         $response = $handler([
