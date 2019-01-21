@@ -4,6 +4,7 @@ namespace LukeWaite\RingPhpGuzzleHandler;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Psr7\StreamWrapper;
 use GuzzleHttp\RequestOptions;
 use GuzzleHttp\Ring\Core;
 use GuzzleHttp\Ring\Future\CompletedFutureArray;
@@ -59,7 +60,7 @@ class GuzzleHandler
             'reason' => $response->getReasonPhrase(),
             'headers' => $response->getHeaders(),
             'effective_url' => $url,
-            'body' => $this->createStream((string) $response->getBody()),
+            'body' => StreamWrapper::getResource($response->getBody()),
             'transfer_stats' => $this->createTransferStats($url, $time, $response),
         ];
     }
@@ -72,24 +73,6 @@ class GuzzleHandler
             'content_type' => $response->getHeaderLine('Content-Type'),
             'http_code' => $response->getStatusCode(),
         ];
-    }
-
-    private function createStream($resource)
-    {
-        if ($resource == '') {
-            return null; // @codeCoverageIgnore
-        }
-
-        $stream = fopen('php://temp', 'r+');
-
-        if ($stream === false) {
-            return null; // @codeCoverageIgnore
-        }
-
-        fwrite($stream, $resource);
-        fseek($stream, 0);
-
-        return $stream;
     }
 
     private function emptyResponse()
