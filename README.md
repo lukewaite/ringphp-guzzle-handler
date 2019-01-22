@@ -16,6 +16,15 @@ This package can be installed with composer.
 ### Elasticsearch
 
 ```php
+$guzzleHandler  = new LukeWaite\RingPhpGuzzleHandler\GuzzleHandler();
+
+$client = Elasticsearch\ClientBuilder::create()
+            ->setHandler($guzzleHandler)
+            ->build();
+```
+
+Optionally, you may create a Guzzle client manually, and pass it through to the constructor:
+```php
 $guzzle = new GuzzleHttp\Client();
 $guzzleHandler  = new LukeWaite\RingPhpGuzzleHandler\GuzzleHandler($guzzle);
 
