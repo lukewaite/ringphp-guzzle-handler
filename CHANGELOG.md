@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [v2.2.0] - 2021-04-23
+
+* Add PHP 8 support ([#8](https://github.com/lukewaite/ringphp-guzzle-handler/pull/8/files))
+
 ## [v2.1.0] - 2019-01-21
 
 * Add support for Async calls ([#2](https://github.com/lukewaite/ringphp-guzzle-handler/pull/2))
@@ -25,7 +29,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * Initial Release
 
-[Unreleased]: https://github.com/lukewaite/ringphp-guzzle-handler/compare/v2.1.0...HEAD
+[Unreleased]: https://github.com/lukewaite/ringphp-guzzle-handler/compare/v2.2.0...HEAD
+[v2.2.0]: https://github.com/lukewaite/ringphp-guzzle-handler/compare/v2.1.0...v2.2.0
 [v2.1.0]: https://github.com/lukewaite/ringphp-guzzle-handler/compare/v2.0.0...v2.1.0
 [v2.0.0]: https://github.com/lukewaite/ringphp-guzzle-handler/compare/v1.0.1...v2.0.0
 [v1.0.1]: https://github.com/lukewaite/ringphp-guzzle-handler/compare/v1.0.0...v1.0.1
