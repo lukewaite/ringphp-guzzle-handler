@@ -1,8 +1,6 @@
 # RingPHP Guzzle Handler
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/lukewaite/ringphp-guzzle-handler.svg?style=flat-square)](https://packagist.org/packages/lukewaite/ringphp-guzzle-handler)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
-[![Build Status](https://img.shields.io/travis/lukewaite/ringphp-guzzle-handler/master.svg?style=flat-square)](https://travis-ci.org/lukewaite/ringphp-guzzle-handler)
-[![Coveralls](https://img.shields.io/coveralls/github/lukewaite/ringphp-guzzle-handler/master.svg?style=flat-square)](https://coveralls.io/github/lukewaite/ringphp-guzzle-handler)
 [![Total Downloads](https://img.shields.io/packagist/dt/lukewaite/ringphp-guzzle-handler.svg?style=flat-square)](https://packagist.org/packages/lukewaite/ringphp-guzzle-handler)
 
 ## Usage
