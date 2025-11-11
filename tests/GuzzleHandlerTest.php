@@ -18,14 +18,17 @@ class GuzzleHandlerTest extends TestCase
     {
         $response = new Response(200, ['Content-Type' => ['application/json']], 'testResponseBody');
 
-        $client = $this->prophesize(Client::class);
-        $client->requestAsync('POST', 'https://example.com/', [
-            'body' => 'testBody',
-            'headers' => ['host'=>['example.com']],
-            'http_errors' => false
-        ])->willReturn(new FulfilledPromise($response));
+        $client = $this->createMock(Client::class);
+        $client->expects($this->once())
+            ->method('requestAsync')
+            ->with('POST', 'https://example.com/', [
+                'body' => 'testBody',
+                'headers' => ['host'=>['example.com']],
+                'http_errors' => false
+            ])
+            ->willReturn(new FulfilledPromise($response));
 
-        $handler = new GuzzleHandler($client->reveal());
+        $handler = new GuzzleHandler($client);
         $response = $handler([
             'http_method' => 'POST',
             'scheme' => 'https',
@@ -43,15 +46,18 @@ class GuzzleHandlerTest extends TestCase
     {
         $response = new Response(200, ['Content-Type' => ['application/json']], 'testResponseBody');
 
-        $client = $this->prophesize(Client::class);
-        $client->requestAsync('POST', 'https://example.com/', [
-            'body' => 'testBody',
-            'headers' => ['host' => ['example.com']],
-            'http_errors' => false,
-            'auth' => ['user', 'password']
-        ])->willReturn(new FulfilledPromise($response));
+        $client = $this->createMock(Client::class);
+        $client->expects($this->once())
+            ->method('requestAsync')
+            ->with('POST', 'https://example.com/', [
+                'body' => 'testBody',
+                'headers' => ['host' => ['example.com']],
+                'http_errors' => false,
+                'auth' => ['user', 'password']
+            ])
+            ->willReturn(new FulfilledPromise($response));
 
-        $handler = new GuzzleHandler($client->reveal());
+        $handler = new GuzzleHandler($client);
         $response = $handler([
             'http_method' => 'POST',
             'scheme' => 'https',
@@ -87,7 +93,7 @@ class GuzzleHandlerTest extends TestCase
     {
         $stats = $response['transfer_stats'];
         $this->assertEquals('https://example.com/', $stats['url']);
-        $this->assertInternalType('float', $stats['total_time']);
+        $this->assertIsFloat($stats['total_time']);
         $this->assertEquals('application/json', $stats['content_type']);
         $this->assertEquals('200', $stats['http_code']);
     }
@@ -97,14 +103,17 @@ class GuzzleHandlerTest extends TestCase
     {
         $exception = new TransferException('Test Exception');
 
-        $client = $this->prophesize(Client::class);
-        $client->requestAsync('POST', 'https://example.com/', [
-            'body' => 'testBody',
-            'headers' => ['host' => ['example.com']],
-            'http_errors' => false,
-        ])->willReturn(new RejectedPromise($exception));
+        $client = $this->createMock(Client::class);
+        $client->expects($this->once())
+            ->method('requestAsync')
+            ->with('POST', 'https://example.com/', [
+                'body' => 'testBody',
+                'headers' => ['host' => ['example.com']],
+                'http_errors' => false,
+            ])
+            ->willReturn(new RejectedPromise($exception));
 
-        $handler = new GuzzleHandler($client->reveal());
+        $handler = new GuzzleHandler($client);
         $response = $handler([
             'http_method' => 'POST',
             'scheme' => 'https',
