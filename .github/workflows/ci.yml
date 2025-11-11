@@ -26,7 +26,6 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          coverage: xdebug
           extensions: mbstring
 
       - name: Cache Composer packages
@@ -46,6 +45,4 @@ jobs:
         run: composer update --prefer-lowest --no-interaction --no-progress
 
       - name: Run test suite
-        run: vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
-        env:
-          XDEBUG_MODE: coverage
+        run: vendor/bin/phpunit
