@@ -93,7 +93,7 @@ class GuzzleHandler
             'status' => null,
             'reason' => null,
             'headers' => [],
-            'effective_url' => null,
+            'effective_url' => '',
             'body' => null,
             'transfer_stats' => [
                 'url' => null,

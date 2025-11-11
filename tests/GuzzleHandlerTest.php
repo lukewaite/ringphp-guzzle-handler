@@ -114,5 +114,6 @@ class GuzzleHandlerTest extends TestCase
         ]);
 
         $this->assertEquals($exception, $response['error']);
+        $this->assertSame($response['effective_url'], '');
     }
 }
